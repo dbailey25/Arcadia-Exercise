@@ -11,10 +11,13 @@ console.log(contactsArr);
 
 contactsArr.forEach(element => {
   var name1 = element.name;
-  var name2 = name1.replace(/[^a-zA-Z]/g, ' ')
+  var name2 = name1.replace(/[^a-z]/gi, ' ')
   .replace(/ +/g, ' ');
-  // console.log(name2);
   element.name = name2;
+  var phone1 = element.phone;
+  var phone2 = phone1.replace(/\D/g, ''); 
+  var m = phone2.match(/^(\d{3})(\d{3})(\d{4})$/);
+  element.phone = "(" + m[1] + ") " + m[2] + "-" + m[3];
 });
 
 console.log(contactsArr);
