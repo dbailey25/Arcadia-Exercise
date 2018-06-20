@@ -31,12 +31,87 @@ console.log('fields', fields);
 class App extends Component {
 
   state = {
-    contacts: []
+    contacts: [],
+    sort: {
+      column: null,
+      direction: 'desc',
+    }
   };
 
   componentDidMount() {
     this.setState({ contacts: contactsArr });
   }
+
+  onSort = (column) => (e) => {
+    const direction = this.state.sort.column ? (this.state.sort.direction === 'asc' ? 'desc' : 'asc') : 'desc';
+    const sortedData = this.state.contacts.sort((a, b) => {
+      if (column === 'name') {
+        const nameA = a.name.toUpperCase(); 
+        const nameB = b.name.toUpperCase(); 
+        if (nameA < nameB) {
+          return -1;
+        }
+        if (nameA > nameB) {
+          return 1;
+        }
+
+        // names must be equal
+        return 0;
+      } else if (column === 'email') {
+        const emailA = a.email.toUpperCase();
+        const emailB = b.email.toUpperCase();
+        if (emailA < emailB) {
+          return -1;
+        }
+        if (emailA > emailB) {
+          return 1;
+        }
+
+        // emails must be equal
+        return 0;
+      } else {
+        const phoneA = a.phone.toUpperCase();
+        const phoneB = b.phone.toUpperCase();
+        if (phoneA < phoneB) {
+          return -1;
+        }
+        if (phoneA > phoneB) {
+          return 1;
+        }
+
+        // phones must be equal
+        return 0;        
+      }
+      // else {
+      //   return a.contractValue - b.contractValue;
+      // }
+    });
+
+    if (direction === 'desc') {
+      sortedData.reverse();
+    }
+
+    this.setState({
+      data: sortedData,
+      sort: {
+        column,
+        direction,
+      }
+    });
+  };
+
+  setArrow = (column) => {
+    let className = 'sort-direction';
+
+    if (this.state.sort.column === column) {
+      className += this.state.sort.direction === 'asc' ? ' asc' : ' desc';
+    }
+
+    console.log(className);
+
+    return className;
+  };
+
 
   render() {
      var newContacts = this.state.contacts;
@@ -48,12 +123,12 @@ class App extends Component {
             <span className="App-title">Contact Manager</span>
           </header>
 
-        <table className="m-table">
+        <table className="table">
           <thead>
             <tr>
-              <th>NAME</th>
-              <th>EMAIL</th>
-              <th>PHONE</th>
+                <th onClick={this.onSort('name')}>NAME<span className={this.setArrow('name')}></span></th>
+                <th onClick={this.onSort('email')}>EMAIL<span className={this.setArrow('email')}></span></th>
+                <th onClick={this.onSort('phone')}>PHONE<span className={this.setArrow('phone')}></span></th>
             </tr>
           </thead>
           <tbody>
