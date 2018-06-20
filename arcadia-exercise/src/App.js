@@ -1,13 +1,10 @@
 import React, { Component } from 'react';
 import './App.css';
 import Contacts from './contacts.json';
+// import { Table } from './components';
 
-console.log(Contacts);
-
+// Parse and format input data
 var contactsArr = Contacts.contacts;
-
-console.log(contactsArr);
-
 
 contactsArr.forEach(element => {
   var name1 = element.name;
@@ -22,29 +19,130 @@ contactsArr.forEach(element => {
 
 console.log(contactsArr);
 
+var keys = Object.keys(contactsArr[0]);
+var fields = keys.map(function (x) { return x.toUpperCase() })
+console.log('fields', fields);
 
-// contactsArr.forEach(element => {
-//   element.name = ;
-//   var name2 = name1.replace(/[^a-zA-Z]/g, ' ')
-//     .replace(/ +/g, ' ');
-//   console.log(name2);
-// });
+
+
+
 
 
 class App extends Component {
+
+  state = {
+    contacts: []
+  };
+
+  componentDidMount() {
+    this.setState({ contacts: contactsArr });
+  }
+
   render() {
-    return (
-      <div className="App">
-        <header className="App-header">
-          <img src='./ap-logo_white.png' className="App-logo" alt="logo" />
-          <span className="App-title">Contact Manager</span>
-        </header>
-        <p className="App-intro">
-          To get started, edit <code>src/App.js</code> and save to reload.
-        </p>
-      </div>
-    );
+     var newContacts = this.state.contacts;
+
+      return (
+        <div className="App">
+          <header className="App-header">
+            <img src='./ap-logo_white.png' className="App-logo" alt="logo" />
+            <span className="App-title">Contact Manager</span>
+          </header>
+
+        <table className="m-table">
+          <thead>
+            <tr>
+              <th>NAME</th>
+              <th>EMAIL</th>
+              <th>PHONE</th>
+            </tr>
+          </thead>
+          <tbody>
+            {newContacts.map(function (contact, index) {
+              return (
+                <tr key={index} contacts-item={contact}>
+                  <td contacts-title="Name">{contact.name}</td>
+                  <td contacts-title="Email">{contact.email}</td>
+                  <td contacts-title="Phone">{contact.phone}</td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+        </div >
+      );
   }
 }
+
+
+
+
+  // createTable = (headers, contacts) => {
+  //   var table = document.createElement('table');
+  //   // var tableHead = document.createElement('thead');
+  //   var tableBody = document.createElement('tbody');
+
+  //   console.log('headers', headers);
+    
+
+    // headers.forEach(function (headerData) {
+    //   var headerRow = document.createElement('tr');
+
+    //   headerData.forEach(function (headerName) {
+    //     var header = document.createElement('td'); header.appendChild(document.createTextNode(headerName));
+    //     headerRow.appendChild(header);
+    //   });
+
+    //   tableHead.appendChild(headerRow);
+    // });
+
+    // contacts.forEach(function (rowData) {
+    //   var row = document.createElement('tr');
+
+    //   rowData.forEach(function (cellData) {
+    //     var cell = document.createElement('td');
+    //     cell.appendChild(document.createTextNode(cellData));
+    //     row.appendChild(cell);
+    //   });
+
+    //   tableBody.appendChild(row);
+    // });
+
+  //   table.appendChild(tableBody);
+  //   document.body.appendChild(table);
+  // }
+  
+
+  // render() {
+  //   console.log(this.state.contacts);
+  //   console.log(this.state.fields);
+  //   return (
+  //     <div className="App">
+  //       <header className="App-header">
+  //         <img src='./ap-logo_white.png' className="App-logo" alt="logo" />
+  //         <span className="App-title">Contact Manager</span>
+  //       </header>
+  //       <p className="App-intro">
+  //         Contacts
+  //       </p>
+  //       {/* <List>
+  //         {contactsArr.map(contact => (
+  //           <ListItem key={contact.id}>
+  //             <div to={"/contact/" + contact.id}>
+  //                 {contact.name}:  {contact.email}:  {contact.phone}
+  //             </div>
+  //             <DeleteBtn onClick={() => this.deleteCurrentOrder(order._id)} />
+  //           </ListItem>
+  //         ))
+  //         }
+  //       </List> */}
+  //       <Table
+  //         fields={this.state.fields}
+  //         contacts={this.state.contacts}
+  //         createTable={this.createTable()}
+  //       />
+  //     </div>
+  //   );
+  // }
+// }
 
 export default App;
