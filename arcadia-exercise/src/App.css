@@ -1,5 +1,26 @@
-.App {
-  text-align: center;
+table {
+  border-collapse: collapse;
+  width: 600px;
+}
+  
+tbody tr {
+  border: 1px solid #eee;      
+}
+
+th, td {
+  padding: 5px;
+}
+
+thead th {
+  background: rgb(131, 131, 131);
+  border: 1px solid rgb(131, 131, 131);      
+  cursor: pointer;
+}
+
+
+
+.App table {
+  margin: 0 auto;
 }
 
 .App-logo {
@@ -7,11 +28,17 @@
 }
 
 .App-header {
+  text-align: center;
   background-color: rgb(51, 193, 255);
   height: 75px;
   padding: 10px;
+  margin-bottom: 15px;
   color: rgb(255, 255, 255);
   box-shadow: 0 5px 5px #888888;
+}
+
+.App-intro {
+  font-size: large;
 }
 
 .App-title {
@@ -20,11 +47,27 @@
   margin: 5px;
 }
 
-.App-intro {
-  font-size: large;
+.sort-direction {
+  display: inline-block;
+  width: 10px;
+
 }
 
-@keyframes App-logo-spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+.sort-direction.asc {
+  display: inline-block;
+  height: 0;
+  width: 0;
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  border-bottom: 5px solid black;
+}
+
+.sort-direction.desc {
+  display: inline-block;
+  height: 0;
+  width: 0;
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  border-top: 5px solid black;
+  
 }
