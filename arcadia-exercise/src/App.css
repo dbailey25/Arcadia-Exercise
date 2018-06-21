@@ -18,6 +18,10 @@ thead th {
 }
 
 
+#add-contact {
+  margin: 5px 0 50px 0;
+  cursor: pointer;
+}
 
 .App table {
   margin: 0 auto;
@@ -30,7 +34,7 @@ thead th {
 .App-header {
   text-align: center;
   background-color: rgb(51, 193, 255);
-  height: 75px;
+  height: 95px;
   padding: 10px;
   margin-bottom: 15px;
   color: rgb(255, 255, 255);
@@ -45,6 +49,11 @@ thead th {
   font-size: 1.5em;
   display: block;
   margin: 5px;
+}
+
+.content {
+  width: 600px;
+  margin: 0 auto;
 }
 
 .sort-direction {
@@ -71,3 +80,5 @@ thead th {
   border-top: 5px solid black;
   
 }
+
+
