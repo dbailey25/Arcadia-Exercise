@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import './App.css';
 import Contacts from './contacts.json';
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
-import { NewContact } from './components';
+import { Contact } from './components';
 
 // Parse and format input data
 var contactsArr = Contacts.contacts;
@@ -48,22 +48,31 @@ class App extends Component {
         direction: 'desc',
       },
       modal: false,
+      id: 0,
       name: '',
       email: '',
       phone: ''
     };
 
-    this.toggle = this.toggle.bind(this);
+    this.toggleAdd = this.toggleAdd.bind(this);
+    this.getContact = this.getContact.bind(this);
   }
 
   componentDidMount() {
     this.setState({ contacts: parsedContacts });
   }
 
-  // this.toggle = this.toggle.bind(this);
-  // }
+  renderContact = (contact, index) => {
+    return (
+      <tr id={contact.id} className='contact-row' key={index} contacts-item={contact} data-toggle="modal" data-target="#exampleModal" onClick={() => this.getContact(contact)}>
+        <td contacts-title="Name">{contact.name}</td>
+        <td contacts-title="Email">{contact.email}</td>
+        <td contacts-title="Phone">{contact.phone}</td>
+      </tr>
+    );
+  }
 
-  toggle() {
+  toggleAdd() {
     this.setState({
       modal: !this.state.modal
     });
@@ -82,7 +91,6 @@ class App extends Component {
           return 1;
         }
 
-        // names must be equal
         return 0;
       } else if (column === 'email') {
         const emailA = a.email.toUpperCase();
@@ -94,7 +102,6 @@ class App extends Component {
           return 1;
         }
 
-        // emails must be equal
         return 0;
       } else {
         const phoneA = a.phone.toUpperCase();
@@ -106,12 +113,8 @@ class App extends Component {
           return 1;
         }
 
-        // phones must be equal
         return 0;        
       }
-      // else {
-      //   return a.contractValue - b.contractValue;
-      // }
     });
 
     if (direction === 'desc') {
@@ -137,30 +140,53 @@ class App extends Component {
     console.log(className);
 
     return className;
-  };
+  }
 
   handleInputChange = event => {
     const { name, value } = event.target;
     this.setState({
       [name]: value
     });
-  }; // end method, handleInputChange
+  } // end method, handleInputChange
 
   addContact = () => {
-    let recordNumber = parsedContacts.length + 1;
-    let newRecord = {
-      id: recordNumber,
+    if (this.state.name && this.state.email && this.state.phone) {
+      let recordNumber = parsedContacts.length + 1;
+      let newRecord = {
+        id: recordNumber,
+        name: this.state.name,
+        email: this.state.email,
+        phone: this.state.phone
+      };    
+      contactsArr.push(newRecord);
+      parseContacts();
+      this.setState({
+        modal: !this.state.modal
+      });
+    }
+  }
+
+  getContact = (contact) => {
+    console.log(contact);
+    this.setState({
+      id: contact.id,
+      name: contact.name,
+      email: contact.email,
+      phone: contact.phone
+    })    
+  }
+
+  editContact = (contact) => {
+    let editedContact = {      
+      id: this.state.id,
       name: this.state.name,
       email: this.state.email,
       phone: this.state.phone
-    };    
-    contactsArr.push(newRecord);
-    parseContacts();
-    this.setState({
-      modal: !this.state.modal
-    });
-
+    };
+    let i = this.state.id -1;
+    contactsArr.splice(i, 1, editedContact)
   }
+
 
   render() {
      var newContacts = this.state.contacts;
@@ -181,18 +207,10 @@ class App extends Component {
                 </tr>
               </thead>
               <tbody>
-                {newContacts.map(function (contact, index) {
-                  return (
-                    <tr key={index} contacts-item={contact}>
-                      <td contacts-title="Name">{contact.name}</td>
-                      <td contacts-title="Email">{contact.email}</td>
-                      <td contacts-title="Phone">{contact.phone}</td>
-                    </tr>
-                  );
-                })}
+                {newContacts.map((contact, index) => this.renderContact(contact, index))}
               </tbody>
             </table>
-            <div id='add-contact' onClick={this.toggle}>
+            <div id='add-contact' onClick={this.toggleAdd}>
             + Add new contact
             </div>
 
@@ -200,19 +218,45 @@ class App extends Component {
 
             <div>
               <Modal isOpen={this.state.modal} toggle={this.toggle} className={this.props.className}>
-                <ModalHeader toggle={this.toggle}>Add New Contact</ModalHeader>
+                <ModalHeader toggle={this.toggleAdd}>Add Contact</ModalHeader>
                 <ModalBody>
-                  <NewContact
+                  <Contact
                     handleInputChange={this.handleInputChange}                 
                   />
                 </ModalBody>
                 <ModalFooter>
                   <Button color="primary" onClick={this.addContact}>Add Contact</Button>{' '}
-                  <Button color="secondary" onClick={this.toggle}>Cancel</Button>
+                  <Button color="secondary" onClick={this.toggleAdd}>Cancel</Button>
                 </ModalFooter>
               </Modal>
             </div>
-            
+
+            {/* Edit Contact Modal */}
+
+            <div className="modal fade" id="exampleModal" tabIndex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+              <div className="modal-dialog" role="document">
+                <div className="modal-content">
+                  <div className="modal-header">
+                    <h5 className="modal-title" id="exampleModalLabel">Edit Contact</h5>
+                    <button type="button" className="close" data-dismiss="modal" aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                  </div>
+                  <div className="modal-body">
+                    <Contact
+                      handleInputChange={this.handleInputChange}
+                      name={this.state.name}
+                      email={this.state.email}
+                      phone={this.state.phone}
+                    />
+                  </div>
+                  <div className="modal-footer">
+                    <button type="button" className="btn btn-primary" onClick={this.editContact()}>Save changes</button>
+                    <button type="button" className="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                  </div>
+                </div>
+              </div>
+            </div>            
           </div>
         </div >
       );
