@@ -29,7 +29,6 @@ const parseContacts = () => {
 
 parseContacts();
 
-console.log(parsedContacts);
 
 var keys = Object.keys(parsedContacts[0]);
 var fields = keys.map(function (x) { return x.toUpperCase() })
@@ -51,16 +50,14 @@ class App extends Component {
       id: 0,
       name: '',
       email: '',
-      phone: ''
+      phone: '',
+      contactCount: 0
     };
 
     this.toggleAdd = this.toggleAdd.bind(this);
     this.getContact = this.getContact.bind(this);
   }
 
-  componentDidMount() {
-    this.setState({ contacts: parsedContacts });
-  }
 
   renderContact = (contact, index) => {
     return (
@@ -167,6 +164,8 @@ class App extends Component {
   }
 
   getContact = (contact) => {
+    console.log('getContact');
+    
     console.log(contact);
     this.setState({
       id: contact.id,
@@ -176,20 +175,31 @@ class App extends Component {
     })    
   }
 
-  editContact = (contact) => {
+  editContact = (contact) => {   
+    console.log('editContact');
     let editedContact = {      
       id: this.state.id,
       name: this.state.name,
       email: this.state.email,
       phone: this.state.phone
-    };
+    };   
     let i = this.state.id -1;
-    contactsArr.splice(i, 1, editedContact)
+    contactsArr.splice(i, 1, editedContact);
+    this.setState({
+      contactCount: contactsArr.length
+    })
+  }
+
+  deleteContact = () => {
+    let i = this.state.id - 1;
+    contactsArr.splice(i, 1);    
+    this.setState({
+      contactCount: contactsArr.length
+    })
   }
 
 
   render() {
-     var newContacts = this.state.contacts;
 
       return (
         <div className="App">
@@ -207,7 +217,7 @@ class App extends Component {
                 </tr>
               </thead>
               <tbody>
-                {newContacts.map((contact, index) => this.renderContact(contact, index))}
+                {parsedContacts.map((contact, index) => this.renderContact(contact, index))}
               </tbody>
             </table>
             <div id='add-contact' onClick={this.toggleAdd}>
@@ -225,7 +235,7 @@ class App extends Component {
                   />
                 </ModalBody>
                 <ModalFooter>
-                  <Button color="primary" onClick={this.addContact}>Add Contact</Button>{' '}
+                  <Button color="primary" onClick={this.addContact}>Add</Button>{' '}
                   <Button color="secondary" onClick={this.toggleAdd}>Cancel</Button>
                 </ModalFooter>
               </Modal>
@@ -251,7 +261,8 @@ class App extends Component {
                     />
                   </div>
                   <div className="modal-footer">
-                    <button type="button" className="btn btn-primary" onClick={this.editContact()}>Save changes</button>
+                    <button type="button" className="btn btn-primary" onClick={() => this.editContact()} data-dismiss="modal">Save</button>
+                    <button type="button" className="btn btn-danger" onClick={() => this.deleteContact()} data-dismiss="modal">Delete</button>
                     <button type="button" className="btn btn-secondary" data-dismiss="modal">Cancel</button>
                   </div>
                 </div>
