@@ -4,36 +4,8 @@ import Contacts from './contacts.json';
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 import { Contact } from './components';
 
-// Parse and format input data
 var contactsArr = Contacts.contacts;
 let parsedContacts = [];
-
-const parseContacts = () => {
-  contactsArr.forEach(element => {
-    var id1 = element.id;
-    var id2 = parseInt(id1, 10);
-    element.id = id2;
-    var name1 = element.name;
-    var name2 = name1.replace(/[^a-z]/gi, ' ')
-    .replace(/ +/g, ' ');
-    element.name = name2;
-    var phone1 = element.phone;
-    var phone2 = phone1.replace(/\D/g, ''); 
-    var m = phone2.match(/^(\d{3})(\d{3})(\d{4})$/);
-    element.phone = "(" + m[1] + ") " + m[2] + "-" + m[3];
-  });
-  parsedContacts=contactsArr;
-  console.log('parsedContacts', parsedContacts);
-
-};
-
-parseContacts();
-
-
-var keys = Object.keys(parsedContacts[0]);
-var fields = keys.map(function (x) { return x.toUpperCase() })
-console.log('fields', fields);
-
 
 
 class App extends Component {
@@ -41,7 +13,7 @@ class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      contacts: [],
+      contacts: parsedContacts,
       sort: {
         column: null,
         direction: 'desc',
@@ -56,6 +28,30 @@ class App extends Component {
 
     this.toggleAdd = this.toggleAdd.bind(this);
     this.getContact = this.getContact.bind(this);
+  }
+
+  parseContacts = () => {
+    contactsArr.forEach(element => {
+      var id1 = element.id;
+      var id2 = parseInt(id1, 10);
+      element.id = id2;
+      var name1 = element.name;
+      var name2 = name1.replace(/[^a-z]/gi, ' ')
+        .replace(/ +/g, ' ');
+      element.name = name2;
+      var phone1 = element.phone;
+      var phone2 = phone1.replace(/\D/g, '');
+      var m = phone2.match(/^(\d{3})(\d{3})(\d{4})$/);
+      element.phone = "(" + m[1] + ") " + m[2] + "-" + m[3];
+    });
+    parsedContacts = contactsArr;
+    this.setState({
+      contacts: parsedContacts
+    })
+  };
+
+  componentDidMount() {
+    this.parseContacts();
   }
 
 
@@ -129,13 +125,9 @@ class App extends Component {
 
   setArrow = (column) => {
     let className = 'sort-direction';
-
     if (this.state.sort.column === column) {
       className += this.state.sort.direction === 'asc' ? ' asc' : ' desc';
     }
-
-    console.log(className);
-
     return className;
   }
 
@@ -156,7 +148,7 @@ class App extends Component {
         phone: this.state.phone
       };    
       contactsArr.push(newRecord);
-      parseContacts();
+      this.parseContacts();
       this.setState({
         modal: !this.state.modal
       });
@@ -164,9 +156,6 @@ class App extends Component {
   }
 
   getContact = (contact) => {
-    console.log('getContact');
-    
-    console.log(contact);
     this.setState({
       id: contact.id,
       name: contact.name,
@@ -176,26 +165,30 @@ class App extends Component {
   }
 
   editContact = (contact) => {   
-    console.log('editContact');
     let editedContact = {      
       id: this.state.id,
       name: this.state.name,
       email: this.state.email,
       phone: this.state.phone
     };   
+    
     let i = this.state.id -1;
     contactsArr.splice(i, 1, editedContact);
+    this.parseContacts()
     this.setState({
       contactCount: contactsArr.length
     })
   }
 
   deleteContact = () => {
-    let i = this.state.id - 1;
-    contactsArr.splice(i, 1);    
+    let contactToDelete = this.state.id;
+    let myArray = this.state.contacts;
+    myArray = myArray.filter(function (obj) {
+      return obj.id !== contactToDelete;
+    });
     this.setState({
-      contactCount: contactsArr.length
-    })
+      contacts: myArray
+    });
   }
 
 
@@ -217,7 +210,8 @@ class App extends Component {
                 </tr>
               </thead>
               <tbody>
-                {parsedContacts.map((contact, index) => this.renderContact(contact, index))}
+                {/* {parsedContacts.map((contact, index) => this.renderContact(contact, index))} */}
+                {this.state.contacts.map((contact, index) => this.renderContact(contact, index))}
               </tbody>
             </table>
             <div id='add-contact' onClick={this.toggleAdd}>
