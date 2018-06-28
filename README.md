@@ -5,5 +5,5 @@ This is a contact management app that fetches set of contacts from a static file
 
 #### Installation
 1. Clone this repository to your local machine
-1. Navigate to the root directory and execute the 'npm install' command
+1. Navigate to the root directory and execute the 'npm install' command to load dependant packages
 1. Execute the 'npm start' command to launch the application
