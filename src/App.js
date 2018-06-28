@@ -30,8 +30,8 @@ class App extends Component {
     this.getContact = this.getContact.bind(this);
   }
 
-  parseContacts = () => {
-    contactsArr.forEach(element => {
+  parseContacts = (arrayToParse) => {
+    arrayToParse.forEach(element => {
       var id1 = element.id;
       var id2 = parseInt(id1, 10);
       element.id = id2;
@@ -44,14 +44,14 @@ class App extends Component {
       var m = phone2.match(/^(\d{3})(\d{3})(\d{4})$/);
       element.phone = "(" + m[1] + ") " + m[2] + "-" + m[3];
     });
-    parsedContacts = contactsArr;
+    parsedContacts = arrayToParse;
     this.setState({
       contacts: parsedContacts
     })
   };
 
   componentDidMount() {
-    this.parseContacts();
+    this.parseContacts(contactsArr);
   }
 
 
@@ -136,10 +136,11 @@ class App extends Component {
     this.setState({
       [name]: value
     });
-  } // end method, handleInputChange
+  } 
 
   addContact = () => {
     if (this.state.name && this.state.email && this.state.phone) {
+      let contactsAdd = this.state.contacts;
       let recordNumber = parsedContacts.length + 1;
       let newRecord = {
         id: recordNumber,
@@ -147,8 +148,8 @@ class App extends Component {
         email: this.state.email,
         phone: this.state.phone
       };    
-      contactsArr.push(newRecord);
-      this.parseContacts();
+      contactsAdd.push(newRecord);
+      this.parseContacts(contactsAdd);
       this.setState({
         modal: !this.state.modal
       });
@@ -173,10 +174,11 @@ class App extends Component {
     };   
     
     let i = this.state.id -1;
-    contactsArr.splice(i, 1, editedContact);
-    this.parseContacts()
+    let contactsEdit = this.state.contacts;
+    contactsEdit.splice(i, 1, editedContact);
+    this.parseContacts(contactsEdit)
     this.setState({
-      contactCount: contactsArr.length
+      contactCount: contactsEdit.length
     })
   }
 
@@ -189,6 +191,7 @@ class App extends Component {
     this.setState({
       contacts: myArray
     });
+    
   }
 
 
@@ -210,7 +213,6 @@ class App extends Component {
                 </tr>
               </thead>
               <tbody>
-                {/* {parsedContacts.map((contact, index) => this.renderContact(contact, index))} */}
                 {this.state.contacts.map((contact, index) => this.renderContact(contact, index))}
               </tbody>
             </table>
